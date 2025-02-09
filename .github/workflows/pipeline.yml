@@ -44,4 +44,4 @@ jobs:
           DEFAULT_BUMP: patch
         # runs when merged and #skip is not present in commit message
         if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip')}}
-        uses: anothrNick/github-tag-action@1.71.0
+        uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
