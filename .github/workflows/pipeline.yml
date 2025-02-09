@@ -1,9 +1,5 @@
 name: Deployment pipeline
 
-env:
-  COMMIT: ${{ toJson(github.event.commits.*.message) }}
-  COMMIT_MESSAGES: ${{ join(github.env.COMMIT, ', ') }} #i have to join cause it is in JSON format
-
 on:
   push:
     branches:
@@ -29,11 +25,14 @@ jobs:
       - name: test
         run: npm run test
       - name: Trigger deployment
+        env:
+          COMMIT: ${{ toJson(github.event.commits.*.message) }}
+          COMMIT_MESSAGES: ${{ join(github.env.COMMIT, ', ') }} #i have to join cause it is in JSON format
         # runs when merged and #skip is not present in commit message
         if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip') }}
         run: |
-          curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
           echo "$COMMIT_MESSAGES"
+          curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -41,9 +40,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        # runs when merged and #skip is not present in commit message
-        if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip')}}
-        uses: anothrNick/github-tag-action@1.71.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+          COMMIT: ${{ toJson(github.event.commits.*.message) }}
+          COMMIT_MESSAGES: ${{ join(github.env.COMMIT, ', ') }}
+        # runs when merged and #skip is not present in commit message
+        if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip')}}
+        uses: anothrNick/github-tag-action@1.71.0
