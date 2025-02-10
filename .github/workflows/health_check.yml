@@ -27,5 +27,17 @@ jobs:
           retry-delay: 5s # Optional, only applicable to max-attempts > 1
           # Retry all errors, including 404. This option might trigger curl upgrade.
           retry-all: false # Optional, defaults to "false"
-      - name: echo output
-        run: echo "${{ toJson(steps.health_check) }}"
+      - name: set health status
+        run: |
+          if [[ "${{ steps.health_check.conclusion }}" == "success" ]]; then
+            echo "HEALTH_STATUS=Healthy" >> $GITHUB_ENV
+          else
+            echo "HEALTH_STATUS=Broken" >> $GITHUB_ENV
+          fi
+      - name: notification to Discord
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          text: Health status
+          description: Status is ${{ env.HEALTH_STATUS }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
