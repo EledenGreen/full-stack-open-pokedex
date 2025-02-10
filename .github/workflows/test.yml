@@ -22,4 +22,4 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
-# fullstack webhook test2
+# fullstack webhook test3
