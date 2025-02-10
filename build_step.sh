@@ -4,4 +4,4 @@ echo "Build script"
 
 npm install
 
-npm run NObuild
+npm run build
