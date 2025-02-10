@@ -23,7 +23,14 @@ jobs:
       - name: lint
         run: npm run eslint
       - name: build
-        run: npm run build
+        run: npm run buildF
+      - name: Build failed
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          details: Build Failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: test
         run: npm run test
       - name: Trigger deployment
@@ -45,3 +52,10 @@ jobs:
         # runs when merged and #skip is not present in commit message
         if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip')}}
         uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
+      - name: tag success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ success() }}
+        with:
+          severity: info
+          details: new version of pokedex deployed
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
