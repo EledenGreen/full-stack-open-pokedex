@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize]
+  schedule:
+    - cron: '*/5 * * * *'
 
 jobs:
   periodic_health_check:
@@ -40,4 +39,5 @@ jobs:
           severity: info
           text: Health status
           description: Status is ${{ env.HEALTH_STATUS }}
+          details: for application - https://full-stack-open-pokedex-xnpl.onrender.com
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
