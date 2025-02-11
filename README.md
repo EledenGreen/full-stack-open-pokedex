@@ -1,3 +1,5 @@
+Link to the other repository for Ex 11.20: https://github.com/EledenGreen/fullstackopen_part_11_bloglist
+
 # Full Stack open CI/CD
 
 This repository is used for the CI/CD module of the Full stack open course
